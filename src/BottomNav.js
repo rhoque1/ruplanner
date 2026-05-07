@@ -1,4 +1,4 @@
-function BottomNav() {
+function BottomNav({ active, onNavigate }) {
   return (
     <div style={{
       position: 'absolute',
@@ -12,13 +12,13 @@ function BottomNav() {
       padding: '0 10px 8px'
     }}>
       {['Home', 'Schedule', 'AI', 'Progress', 'Profile'].map((item) => (
-        <div key={item} style={{
+        <div key={item} onClick={() => onNavigate(item)} style={{
           display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: '3px'
+          alignItems: 'center', gap: '3px', cursor: 'pointer'
         }}>
           <span style={{
             fontSize: '11px',
-            color: item === 'Home' ? '#6366f1' : '#374151'
+            color: active === item ? '#6366f1' : '#374151'
           }}>
             {item}
           </span>
