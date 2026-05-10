@@ -22,3 +22,10 @@ body {
   overflow: hidden;
   position: relative;
 }
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
