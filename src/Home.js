@@ -118,7 +118,7 @@ function Task({ task, onTap }) {
   );
 }
 
-function Home() {
+function Home({ onNavigate }) {
   const [selectedTask, setSelectedTask] = useState(null);
 
   return (
@@ -150,7 +150,31 @@ function Home() {
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', margin: '16px 20px 0' }}>
+      <div
+        onClick={() => onNavigate('StudySpots')}
+        onMouseEnter={e => e.currentTarget.style.borderColor = '#6366f1'}
+        onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2d35'}
+        style={{
+          margin: '12px 20px 0',
+          background: '#1a1d26',
+          borderRadius: '16px',
+          padding: '14px 16px',
+          border: '1px solid #2a2d35',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+          transition: 'border 0.2s ease'
+        }}
+      >
+        <div>
+          <p style={{ color: '#f1f3f5', fontSize: '14px', fontWeight: '600' }}>📚 Find a Study Spot</p>
+          <p style={{ color: '#6b7280', fontSize: '12px', marginTop: '3px' }}>Quiet seats with outlets near you</p>
+        </div>
+        <span style={{ color: '#6366f1', fontSize: '20px' }}>›</span>
+      </div>
+
+      <div style={{ display: 'flex', gap: '10px', margin: '12px 20px 0' }}>
         {[
           { num: '4', label: 'Tasks left' },
           { num: '3', label: 'Deadlines' },
