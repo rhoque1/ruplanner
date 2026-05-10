@@ -29,22 +29,6 @@ function Profile() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', margin: '0 20px 24px' }}>
-        {[
-          { num: '9', label: 'Week' },
-          { num: '4', label: 'Courses' },
-          { num: '67%', label: 'On Track' },
-        ].map((s) => (
-          <div key={s.label} style={{
-            flex: 1, background: '#1a1d26', borderRadius: '12px',
-            padding: '12px', border: '1px solid #2a2d35', textAlign: 'center'
-          }}>
-            <p style={{ fontSize: '20px', fontWeight: '600', color: '#f1f3f5' }}>{s.num}</p>
-            <p style={{ fontSize: '10px', color: '#4b5563', marginTop: '2px' }}>{s.label}</p>
-          </div>
-        ))}
-      </div>
-
       <p style={{ padding: '0 20px 10px', fontSize: '11px', fontWeight: '600', color: '#4b5563', letterSpacing: '0.08em' }}>
         MY COURSES
       </p>
@@ -82,13 +66,8 @@ function Profile() {
         ))}
       </div>
 
-      <div style={{
-        margin: '0 20px', background: '#1a1d26', borderRadius: '14px',
-        border: '1px solid #2a2d35', padding: '14px 16px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'pointer'
-      }}>
-        <p style={{ color: '#f87171', fontSize: '14px', fontWeight: '500' }}>Sign Out</p>
+      <div style={{ textAlign: 'center', padding: '16px 20px', cursor: 'pointer' }}>
+        <p style={{ color: '#4b5563', fontSize: '13px' }}>Sign Out</p>
       </div>
     </div>
   );

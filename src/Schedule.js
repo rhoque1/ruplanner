@@ -67,18 +67,37 @@ function ClassDetail({ cls, onClose, onNavigate }) {
 
         <div
           onClick={() => { onClose(); onNavigate('StudySpots'); }}
-          style={{
-            background: '#1a1d26', borderRadius: '12px', padding: '14px',
-            textAlign: 'center', cursor: 'pointer',
-            border: '1px solid #2a2d35',
-            transition: 'border 0.2s ease'
-          }}
-          onMouseEnter={e => e.currentTarget.style.borderColor = '#6366f1'}
-          onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2d35'}
+          style={{ textAlign: 'center', cursor: 'pointer', padding: '12px' }}
         >
-          <p style={{ color: '#f1f3f5', fontSize: '14px', fontWeight: '600' }}>📚 Find Study Spot Near This Class</p>
+          <p style={{ color: '#6366f1', fontSize: '13px', fontWeight: '600' }}>📚 Find Study Spot Near This Class</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function GapCard({ minutes, onNavigate }) {
+  if (minutes < 30) return null;
+  return (
+    <div style={{
+      margin: '0 20px 10px',
+      background: '#1a1d26',
+      borderRadius: '14px',
+      padding: '12px 16px',
+      border: '1px dashed #2a2d35',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    }}>
+      <p style={{ color: '#4b5563', fontSize: '12px' }}>
+        🕐 {minutes} min free
+      </p>
+      <p
+        onClick={() => onNavigate('StudySpots')}
+        style={{ color: '#6366f1', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
+      >
+        Find a spot →
+      </p>
     </div>
   );
 }
@@ -123,6 +142,7 @@ function ClassCard({ cls, onTap }) {
 
 function Schedule({ onNavigate }) {
   const [selectedClass, setSelectedClass] = useState(null);
+  const [showPast, setShowPast] = useState(false);
 
   return (
     <div style={{ height: '100%', overflowY: 'auto', paddingBottom: '80px', position: 'relative' }}>
@@ -144,13 +164,73 @@ function Schedule({ onNavigate }) {
         <p style={{ fontSize: '13px', color: '#c9cdd6', lineHeight: '1.5' }}>
           Your <span style={{ color: '#fbbf24', fontWeight: '500' }}>CS 214</span> class is at 4:30 PM — peak bus hours. Leave by <span style={{ color: '#fbbf24', fontWeight: '500' }}>3:45 PM</span> to avoid crowding.
         </p>
+        <p
+          onClick={() => setSelectedClass(classes.find(c => c.id === 4))}
+          style={{ fontSize: '12px', color: '#f59e0b', fontWeight: '600', marginTop: '10px', cursor: 'pointer' }}
+        >
+          → View CS 214 details
+        </p>
       </div>
 
       <p style={{ padding: '0 20px 10px', fontSize: '11px', fontWeight: '600', color: '#4b5563', letterSpacing: '0.08em' }}>
         TODAY'S CLASSES
       </p>
 
-      {classes.map((cls) => <ClassCard key={cls.id} cls={cls} onTap={setSelectedClass} />)}
+      {!showPast && classes.some(c => c.done) && (
+        <div
+          onClick={() => setShowPast(true)}
+          style={{ textAlign: 'center', padding: '8px', cursor: 'pointer', marginBottom: '4px' }}
+        >
+          <p style={{ color: '#4b5563', fontSize: '12px' }}>
+            {classes.filter(c => c.done).length} past class{classes.filter(c => c.done).length > 1 ? 'es' : ''} hidden · tap to show
+          </p>
+        </div>
+      )}
+
+      {showPast && (
+        <div
+          onClick={() => setShowPast(false)}
+          style={{ textAlign: 'center', padding: '8px', cursor: 'pointer', marginBottom: '4px' }}
+        >
+          <p style={{ color: '#4b5563', fontSize: '12px' }}>Hide past classes</p>
+        </div>
+      )}
+
+      {(() => {
+        const visibleClasses = classes.filter(c => showPast || !c.done);
+        const lastDone = classes.filter(c => c.done).at(-1);
+        const firstUpcoming = classes.find(c => !c.done);
+        const showFreeGap = !showPast && lastDone && firstUpcoming;
+        const freeGapMinutes = showFreeGap ? (() => {
+          const [h1, m1] = lastDone.end.replace(' PM','').replace(' AM','').split(':').map(Number);
+          const [h2, m2] = firstUpcoming.start.replace(' PM','').replace(' AM','').split(':').map(Number);
+          const end = (lastDone.end.includes('PM') && h1 !== 12 ? h1 + 12 : h1) * 60 + m1;
+          const start = (firstUpcoming.start.includes('PM') && h2 !== 12 ? h2 + 12 : h2) * 60 + m2;
+          return start - end;
+        })() : 0;
+
+        return (
+          <>
+            {showFreeGap && <GapCard minutes={freeGapMinutes} onNavigate={onNavigate} />}
+            {visibleClasses.map((cls, i) => {
+              const next = visibleClasses[i + 1];
+              const gapMinutes = next ? (() => {
+                const [h1, m1] = cls.end.replace(' PM','').replace(' AM','').split(':').map(Number);
+                const [h2, m2] = next.start.replace(' PM','').replace(' AM','').split(':').map(Number);
+                const end = (cls.end.includes('PM') && h1 !== 12 ? h1 + 12 : h1) * 60 + m1;
+                const start = (next.start.includes('PM') && h2 !== 12 ? h2 + 12 : h2) * 60 + m2;
+                return start - end;
+              })() : 0;
+              return (
+                <div key={cls.id}>
+                  <ClassCard cls={cls} onTap={setSelectedClass} />
+                  <GapCard minutes={gapMinutes} onNavigate={onNavigate} />
+                </div>
+              );
+            })}
+          </>
+        );
+      })()}
 
       {selectedClass && (
         <ClassDetail

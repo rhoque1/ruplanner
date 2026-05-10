@@ -10,16 +10,22 @@ import Profile from './Profile';
 
 function App() {
   const [screen, setScreen] = useState('Home');
+  const [prevScreen, setPrevScreen] = useState('Home');
+
+  const navigate = (to) => {
+    setPrevScreen(screen);
+    setScreen(to);
+  };
 
   return (
     <div className="phone">
-      {screen === 'Home' && <Home onNavigate={setScreen} />}
+      {screen === 'Home' && <Home onNavigate={navigate} />}
       {screen === 'AI' && <AI />}
-      {screen === 'Schedule' && <Schedule onNavigate={setScreen} />}
+      {screen === 'Schedule' && <Schedule onNavigate={navigate} />}
       {screen === 'Progress' && <Progress />}
-      {screen === 'StudySpots' && <StudySpots onBack={() => setScreen('Home')} />}
+      {screen === 'StudySpots' && <StudySpots onBack={() => navigate(prevScreen)} />}
       {screen === 'Profile' && <Profile />}
-      <BottomNav active={screen} onNavigate={setScreen} />
+      <BottomNav active={screen} onNavigate={navigate} />
     </div>
   );
 }

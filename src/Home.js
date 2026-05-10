@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const initialTasks = [
   { id: 1, name: 'Read Chapter 7 — Thermodynamics', course: 'Physics 201', due: 'May 5', tag: 'Done', tagColor: '#4ade80', tagBg: '#1a2d1e', done: true },
-  { id: 2, name: 'Lab Report — Pendulum Experiment', course: 'Physics 201', due: 'May 6', tag: 'Urgent', tagColor: '#f87171', tagBg: '#2d1a1a', done: false, progress: 60 },
+  { id: 2, name: 'Lab Report — Pendulum Experiment', course: 'Physics 201', due: 'May 6', dueTonight: true, tag: 'Urgent', tagColor: '#f87171', tagBg: '#2d1a1a', done: false, progress: 60 },
   { id: 3, name: 'Problem Set 4 — Calculus', course: 'Math 301', due: 'May 7', tag: 'Soon', tagColor: '#60a5fa', tagBg: '#1a1f2d', done: false },
   { id: 4, name: 'Essay Outline — Modernism', course: 'English 210', due: 'May 9', tag: 'Planned', tagColor: '#a78bfa', tagBg: '#211a2d', done: false },
 ];
@@ -106,7 +106,7 @@ function Task({ task, onTap }) {
           textDecoration: task.done ? 'line-through' : 'none'
         }}>{task.name}</p>
         <p style={{ color: '#4b5563', fontSize: '11px', marginTop: '2px' }}>
-          {task.course} · {task.due}
+          {task.course} · {task.dueTonight ? <span style={{ color: '#f87171' }}>due tonight</span> : task.due}
         </p>
         {task.progress && (
           <div style={{ height: '3px', background: '#1e2128', borderRadius: '2px', marginTop: '6px' }}>
@@ -115,11 +115,14 @@ function Task({ task, onTap }) {
         )}
       </div>
 
-      <div style={{
-        fontSize: '10px', padding: '3px 8px', borderRadius: '6px',
-        fontWeight: '500', color: task.tagColor, background: task.tagBg
-      }}>
-        {task.tag}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+        <div style={{
+          fontSize: '10px', padding: '3px 8px', borderRadius: '6px',
+          fontWeight: '500', color: task.tagColor, background: task.tagBg
+        }}>
+          {task.tag}
+        </div>
+        <span style={{ color: '#4b5563', fontSize: '16px' }}>›</span>
       </div>
     </div>
   );
@@ -271,9 +274,9 @@ function Home({ onNavigate }) {
 
       <div style={{ display: 'flex', gap: '10px', margin: '12px 20px 0' }}>
         {[
-          { num: '4', label: 'Tasks left' },
-          { num: '3', label: 'Deadlines' },
-          { num: '67%', label: 'Complete' },
+          { num: tasks.filter(t => !t.done).length, label: 'Tasks left' },
+          { num: tasks.filter(t => !t.done && (t.tag === 'Urgent' || t.tag === 'Soon')).length, label: 'Deadlines' },
+          { num: Math.round((tasks.filter(t => t.done).length / tasks.length) * 100) + '%', label: 'Complete' },
         ].map((s) => (
           <div key={s.label} style={{
             flex: 1, background: '#1a1d26', borderRadius: '12px',

@@ -11,17 +11,73 @@ const spots = [
 
 const filters = ['All', 'Quiet', 'Outlets', 'Food'];
 
-function SpotCard({ spot }) {
+
+function SpotDetail({ spot, onClose }) {
   return (
     <div style={{
-      margin: '0 20px 10px',
-      background: '#1a1d26',
-      borderRadius: '14px',
-      padding: '14px 16px',
-      border: '1px solid #2a2d35',
-      cursor: 'pointer',
-      transition: 'border 0.2s ease'
-    }}
+      position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)',
+      display: 'flex', alignItems: 'flex-end', zIndex: 100
+    }}>
+      <div style={{
+        background: '#1a1d26', borderRadius: '24px 24px 0 0',
+        padding: '24px 20px 40px', width: '100%',
+        border: '1px solid #2a2d35'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ fontSize: '10px', padding: '3px 8px', borderRadius: '6px', fontWeight: '500', color: spot.tagColor, background: spot.tagBg }}>{spot.tag}</div>
+          <div onClick={onClose} style={{ color: '#6b7280', fontSize: '20px', cursor: 'pointer' }}>✕</div>
+        </div>
+
+        <h3 style={{ color: '#f1f3f5', fontSize: '18px', fontWeight: '600', marginBottom: '4px' }}>{spot.name}</h3>
+        <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '20px' }}>📍 {spot.campus} · {spot.distance}</p>
+
+        <div style={{ background: '#0d0f14', borderRadius: '12px', padding: '14px 16px', marginBottom: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <p style={{ color: '#6b7280', fontSize: '12px' }}>Noise level</p>
+            <p style={{ color: '#f1f3f5', fontSize: '12px', fontWeight: '500' }}>{spot.noise}</p>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <p style={{ color: '#6b7280', fontSize: '12px' }}>Outlets</p>
+            <p style={{ color: '#f1f3f5', fontSize: '12px', fontWeight: '500' }}>{spot.outlets ? '✓ Available' : '✗ None'}</p>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <p style={{ color: '#6b7280', fontSize: '12px' }}>Food nearby</p>
+            <p style={{ color: '#f1f3f5', fontSize: '12px', fontWeight: '500' }}>{spot.food ? '✓ Yes' : '✗ No'}</p>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <p style={{ color: '#6b7280', fontSize: '12px' }}>Available seats</p>
+            <p style={{ color: '#f1f3f5', fontSize: '12px', fontWeight: '500' }}>{spot.seats} seats</p>
+          </div>
+        </div>
+
+        <div style={{
+          background: '#6366f1', borderRadius: '12px', padding: '14px',
+          textAlign: 'center', cursor: 'pointer', marginBottom: '10px'
+        }}>
+          <p style={{ color: 'white', fontSize: '14px', fontWeight: '600' }}>⭐ Save Spot</p>
+        </div>
+
+        <div onClick={onClose} style={{ textAlign: 'center', padding: '10px', cursor: 'pointer' }}>
+          <p style={{ color: '#4b5563', fontSize: '13px' }}>Close</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SpotCard({ spot, onTap }) {
+  return (
+    <div
+      onClick={() => onTap(spot)}
+      style={{
+        margin: '0 20px 10px',
+        background: '#1a1d26',
+        borderRadius: '14px',
+        padding: '14px 16px',
+        border: '1px solid #2a2d35',
+        cursor: 'pointer',
+        transition: 'border 0.2s ease'
+      }}
       onMouseEnter={e => e.currentTarget.style.borderColor = '#6366f1'}
       onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2d35'}
     >
@@ -63,6 +119,7 @@ function SpotCard({ spot }) {
 
 function StudySpots({ onBack }) {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [selectedSpot, setSelectedSpot] = useState(null);
 
   const filtered = spots.filter(s => {
     if (activeFilter === 'All') return true;
@@ -105,7 +162,8 @@ function StudySpots({ onBack }) {
         {filtered.length} SPOTS AVAILABLE
       </p>
 
-      {filtered.map(spot => <SpotCard key={spot.id} spot={spot} />)}
+      {filtered.map(spot => <SpotCard key={spot.id} spot={spot} onTap={setSelectedSpot} />)}
+      {selectedSpot && <SpotDetail spot={selectedSpot} onClose={() => setSelectedSpot(null)} />}
     </div>
   );
 }

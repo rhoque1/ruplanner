@@ -1,7 +1,7 @@
 const navItems = [
-  { name: 'Home', icon: '⌂' },
+  { name: 'Home', icon: '🏠' },
   { name: 'Schedule', icon: '📅' },
-  { name: 'AI', icon: '✦' },
+  { name: 'AI', icon: '🤖' },
   { name: 'Progress', icon: '📈' },
   { name: 'Profile', icon: '👤' },
 ];

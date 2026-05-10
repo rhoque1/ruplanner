@@ -33,17 +33,36 @@ function AI() {
         ))}
       </div>
 
-      <div style={{ padding: '12px 20px 88px', borderTop: '1px solid #1e2128' }}>
+      <div style={{ padding: '8px 20px 4px', display: 'flex', gap: '8px', overflowX: 'auto' }}>
+        {["Find a study spot", "How's the bus?", "What's due today?"].map(chip => (
+          <div
+            key={chip}
+            style={{
+              padding: '6px 14px', borderRadius: '20px', fontSize: '12px',
+              fontWeight: '500', cursor: 'pointer', flexShrink: 0,
+              background: '#1a1d26', color: '#6366f1',
+              border: '1px solid #2a2d35', transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = '#6366f1'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2d35'}
+          >
+            {chip}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ padding: '8px 20px 88px', borderTop: '1px solid #1e2128' }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: '10px',
           background: '#1a1d26', borderRadius: '24px',
           padding: '10px 16px', border: '1px solid #2a2d35'
         }}>
           <input
-            placeholder="Ask anything..."
+            placeholder="Ask about your schedule, bus, or study spots..."
             style={{
               flex: 1, background: 'none', border: 'none', outline: 'none',
-              color: '#f1f3f5', fontSize: '13px'
+              color: '#f1f3f5', fontSize: '13px',
+              fontFamily: 'DM Sans, sans-serif'
             }}
           />
           <span style={{ color: '#4f46e5', fontSize: '18px', cursor: 'pointer' }}>↑</span>
