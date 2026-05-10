@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 const tasks = [
   { id: 1, name: 'Read Chapter 7 — Thermodynamics', course: 'Physics 201', due: 'done', tag: 'Done', tagColor: '#4ade80', tagBg: '#1a2d1e', done: true },
   { id: 2, name: 'Lab Report — Pendulum Experiment', course: 'Physics 201', due: 'due tonight', tag: 'Urgent', tagColor: '#f87171', tagBg: '#2d1a1a', done: false, progress: 60 },
@@ -5,18 +7,80 @@ const tasks = [
   { id: 4, name: 'Essay Outline — Modernism', course: 'English 210', due: 'due Friday', tag: 'Planned', tagColor: '#a78bfa', tagBg: '#211a2d', done: false },
 ];
 
-function Task({ task }) {
+function TaskDetail({ task, onClose }) {
   return (
     <div style={{
-      margin: '0 20px 8px',
-      background: '#1a1d26',
-      borderRadius: '12px',
-      padding: '12px 14px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      border: '1px solid #2a2d35'
+      position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)',
+      display: 'flex', alignItems: 'flex-end', zIndex: 100
     }}>
+      <div style={{
+        background: '#1a1d26', borderRadius: '24px 24px 0 0',
+        padding: '24px 20px 40px', width: '100%',
+        border: '1px solid #2a2d35'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <p style={{ color: '#6b7280', fontSize: '12px' }}>{task.course}</p>
+          <div onClick={onClose} style={{ color: '#6b7280', fontSize: '20px', cursor: 'pointer' }}>✕</div>
+        </div>
+
+        <h3 style={{ color: '#f1f3f5', fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>{task.name}</h3>
+
+        <div style={{
+          display: 'inline-block', fontSize: '11px', padding: '4px 10px',
+          borderRadius: '6px', fontWeight: '500',
+          color: task.tagColor, background: task.tagBg, marginBottom: '16px'
+        }}>
+          {task.tag}
+        </div>
+
+        <div style={{ background: '#0d0f14', borderRadius: '12px', padding: '14px 16px', marginBottom: '16px' }}>
+          <p style={{ color: '#6b7280', fontSize: '11px', marginBottom: '4px' }}>DUE</p>
+          <p style={{ color: '#f1f3f5', fontSize: '14px', fontWeight: '500' }}>{task.due}</p>
+        </div>
+
+        {task.progress && (
+          <div style={{ background: '#0d0f14', borderRadius: '12px', padding: '14px 16px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <p style={{ color: '#6b7280', fontSize: '11px' }}>PROGRESS</p>
+              <p style={{ color: '#6366f1', fontSize: '11px', fontWeight: '600' }}>{task.progress}%</p>
+            </div>
+            <div style={{ height: '4px', background: '#1e2128', borderRadius: '4px' }}>
+              <div style={{ width: `${task.progress}%`, height: '100%', background: '#6366f1', borderRadius: '4px' }} />
+            </div>
+          </div>
+        )}
+
+        <div style={{
+          background: '#6366f1', borderRadius: '12px', padding: '14px',
+          textAlign: 'center', cursor: 'pointer', marginTop: '8px'
+        }}>
+          <p style={{ color: 'white', fontSize: '14px', fontWeight: '600' }}>
+            {task.done ? '↩ Mark as Incomplete' : '✓ Mark as Done'}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Task({ task, onTap }) {
+  return (
+    <div
+      onClick={() => onTap(task)}
+      onMouseEnter={e => e.currentTarget.style.borderColor = '#6366f1'}
+      onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2d35'}
+      style={{
+        margin: '0 20px 8px',
+        background: '#1a1d26',
+        borderRadius: '12px',
+        padding: '12px 14px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        border: '1px solid #2a2d35',
+        cursor: 'pointer',
+        transition: 'border 0.2s ease'
+      }}>
       <div style={{
         width: '20px', height: '20px', borderRadius: '50%',
         border: task.done ? 'none' : '1.5px solid #374151',
@@ -55,8 +119,10 @@ function Task({ task }) {
 }
 
 function Home() {
+  const [selectedTask, setSelectedTask] = useState(null);
+
   return (
-    <div style={{ paddingBottom: '80px', overflowY: 'auto', height: '100%' }}>
+    <div style={{ paddingBottom: '80px', overflowY: 'auto', height: '100%', position: 'relative' }}>
       <div style={{ padding: '48px 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <p style={{ color: '#6b7280', fontSize: '12px' }}>Wednesday, May 6</p>
@@ -104,7 +170,9 @@ function Home() {
         TODAY'S TASKS
       </p>
 
-      {tasks.map((task) => <Task key={task.id} task={task} />)}
+      {tasks.map((task) => <Task key={task.id} task={task} onTap={setSelectedTask} />)}
+
+      {selectedTask && <TaskDetail task={selectedTask} onClose={() => setSelectedTask(null)} />}
     </div>
   );
 }
