@@ -23,7 +23,7 @@ function CrowdingBar({ value }) {
   );
 }
 
-function ClassDetail({ cls, onClose }) {
+function ClassDetail({ cls, onClose, onNavigate }) {
   return (
     <div style={{
       position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)',
@@ -50,7 +50,7 @@ function ClassDetail({ cls, onClose }) {
 
         <div style={{
           background: cls.peak ? '#2d1a1a' : '#1a2d1e',
-          borderRadius: '12px', padding: '14px 16px', marginBottom: '16px',
+          borderRadius: '12px', padding: '14px 16px', marginBottom: '12px',
           border: `1px solid ${cls.peak ? '#f8717133' : '#4ade8033'}`
         }}>
           <p style={{ color: '#6b7280', fontSize: '11px', marginBottom: '4px' }}>SUGGESTED DEPARTURE</p>
@@ -60,9 +60,23 @@ function ClassDetail({ cls, onClose }) {
 
         <div style={{
           background: '#6366f1', borderRadius: '12px', padding: '14px',
-          textAlign: 'center', cursor: 'pointer'
+          textAlign: 'center', cursor: 'pointer', marginBottom: '10px'
         }}>
           <p style={{ color: 'white', fontSize: '14px', fontWeight: '600' }}>🔔 Set Departure Reminder</p>
+        </div>
+
+        <div
+          onClick={() => { onClose(); onNavigate('StudySpots'); }}
+          style={{
+            background: '#1a1d26', borderRadius: '12px', padding: '14px',
+            textAlign: 'center', cursor: 'pointer',
+            border: '1px solid #2a2d35',
+            transition: 'border 0.2s ease'
+          }}
+          onMouseEnter={e => e.currentTarget.style.borderColor = '#6366f1'}
+          onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2d35'}
+        >
+          <p style={{ color: '#f1f3f5', fontSize: '14px', fontWeight: '600' }}>📚 Find Study Spot Near This Class</p>
         </div>
       </div>
     </div>
@@ -107,7 +121,7 @@ function ClassCard({ cls, onTap }) {
   );
 }
 
-function Schedule() {
+function Schedule({ onNavigate }) {
   const [selectedClass, setSelectedClass] = useState(null);
 
   return (
@@ -138,7 +152,13 @@ function Schedule() {
 
       {classes.map((cls) => <ClassCard key={cls.id} cls={cls} onTap={setSelectedClass} />)}
 
-      {selectedClass && <ClassDetail cls={selectedClass} onClose={() => setSelectedClass(null)} />}
+      {selectedClass && (
+        <ClassDetail
+          cls={selectedClass}
+          onClose={() => setSelectedClass(null)}
+          onNavigate={onNavigate}
+        />
+      )}
     </div>
   );
 }

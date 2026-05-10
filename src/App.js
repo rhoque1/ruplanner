@@ -6,6 +6,7 @@ import Schedule from './Schedule';
 import Progress from './Progress';
 import StudySpots from './StudySpots';
 import BottomNav from './BottomNav';
+import Profile from './Profile';
 
 function App() {
   const [screen, setScreen] = useState('Home');
@@ -14,9 +15,10 @@ function App() {
     <div className="phone">
       {screen === 'Home' && <Home onNavigate={setScreen} />}
       {screen === 'AI' && <AI />}
-      {screen === 'Schedule' && <Schedule />}
+      {screen === 'Schedule' && <Schedule onNavigate={setScreen} />}
       {screen === 'Progress' && <Progress />}
       {screen === 'StudySpots' && <StudySpots onBack={() => setScreen('Home')} />}
+      {screen === 'Profile' && <Profile />}
       <BottomNav active={screen} onNavigate={setScreen} />
     </div>
   );
